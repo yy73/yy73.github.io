@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="程序员" />
+  <meta name="author" content="73" />
+  <meta name="description" content="一个程序猿的博客" />
+  
+  
+  <title>
+    
+      Java 8 Stream 
+      
+      
+      |
+    
+     我是小小菜鸟
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/2.jpg">
+    <link rel="icon" href="/images/1.jpg">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/1.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">73</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Java 8 Stream</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-03-03 11:14:00
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/Java/" title="Java">
+                    <b>#</b> Java
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/Stream/" title="Stream">
+                    <b>#</b> Stream
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p>转载：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/k1Rjqpl4dgDdqhpvqKgdEg">https://mp.weixin.qq.com/s/k1Rjqpl4dgDdqhpvqKgdEg</a></p>
+</blockquote>
+<p><img src="https://gitee.com/JinWeiYang/pic-go/raw/master/img/image-20210303111309238.png" alt="image-20210303111309238"></p>
+<ol>
+<li><p>实体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"> public class Person &#123;</span><br><span class="line">     private String name;  // 姓名</span><br><span class="line">     private int salary; // 薪资</span><br><span class="line">     private int age; // 年龄</span><br><span class="line">     private String sex; //性别</span><br><span class="line">     private String area;  // 地区</span><br><span class="line">     private Date date;  // 日期</span><br><span class="line"> </span><br><span class="line">     public Person(String name, int salary, int age, String sex, String area) &#123;</span><br><span class="line">         this.name = name;</span><br><span class="line">         this.salary = salary;</span><br><span class="line">         this.age = age;</span><br><span class="line">         this.sex = sex;</span><br><span class="line">         this.area = area;</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">     public Person(String name, int salary, int age, String sex, String area, Date date) &#123;</span><br><span class="line">         this.name = name;</span><br><span class="line">         this.salary = salary;</span><br><span class="line">         this.age = age;</span><br><span class="line">         this.sex = sex;</span><br><span class="line">         this.area = area;</span><br><span class="line">         this.date = date;</span><br><span class="line">     &#125;</span><br><span class="line"> 	... get/set/toString 省略 ...</span><br><span class="line"> </span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line">  // 遍历 递归使用</span><br><span class="line">public class Menu &#123;</span><br><span class="line">    public int id;</span><br><span class="line">    /**</span><br><span class="line">     * 名称</span><br><span class="line">     */</span><br><span class="line">    public String name;</span><br><span class="line">    /**</span><br><span class="line">     * 父id ，根节点为0</span><br><span class="line">     */</span><br><span class="line">    public int parentId;</span><br><span class="line">    /**</span><br><span class="line">     * 子节点信息</span><br><span class="line">     */</span><br><span class="line">    public List&lt;Menu&gt; childList;</span><br><span class="line">   </span><br><span class="line">    public Menu(int id, String name, int parentId) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.parentId = parentId;</span><br><span class="line">    &#125;</span><br><span class="line">... get/set/toString 省略 ...</span><br><span class="line">&#125;</span><br><span class="line">      </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>示例</p>
+<ol>
+<li><p>遍历(匹配)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test1() &#123;</span><br><span class="line">       List&lt;Integer&gt; list = Arrays.asList(7, 6, 9, 3, 8, 2, 1);</span><br><span class="line">    // 遍历输出符合条件的元素</span><br><span class="line">    // 匹配第一个</span><br><span class="line">       Optional&lt;Integer&gt; first = list.stream().filter(x -&gt; x &gt; 7).findFirst();</span><br><span class="line">    // 匹配任意（适用于并行流）</span><br><span class="line">       Optional&lt;Integer&gt; any = list.parallelStream().filter(x -&gt; x &gt; 7).findAny();</span><br><span class="line">    // 是否包含符合特定条件的元素</span><br><span class="line">       boolean b = list.stream().anyMatch(x -&gt; x &lt; 7);</span><br><span class="line">       System.out.println(b);</span><br><span class="line">       </span><br><span class="line">       boolean anyMatch = list.stream().anyMatch(x -&gt; x &lt; 6);</span><br><span class="line">       System.out.println(&quot;匹配第一个值：&quot; + findFirst.get());</span><br><span class="line">       System.out.println(&quot;匹配任意一个值：&quot; + findAny.get());</span><br><span class="line">       System.out.println(&quot;是否存在大于6的值：&quot; + anyMatch);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>筛选(遍历)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test2() &#123;</span><br><span class="line">     List&lt;Integer&gt; list = Arrays.asList(6, 7, 3, 8, 1, 2, 9);</span><br><span class="line">     list.stream().filter(x -&gt; x &gt; 7).map(y -&gt; y + 1).forEach(System.out::println);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Test</span><br><span class="line">void test3() &#123;</span><br><span class="line">     List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">     personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">     personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">     personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">     personList.add(new Person(&quot;Anni&quot;, 8200, 24, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">     personList.add(new Person(&quot;Owen&quot;, 9500, 25, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">     personList.add(new Person(&quot;Alisa&quot;, 7900, 26, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">      </span><br><span class="line">    //获取员工 年龄 大于 24 的姓名</span><br><span class="line">    List&lt;String&gt; collect = personList.parallelStream()</span><br><span class="line">    			.filter(x -&gt; x.getAge() &gt; 24)</span><br><span class="line">    			.map(p -&gt; p.getName())</span><br><span class="line">    			.collect(Collectors.toList());</span><br><span class="line">    System.out.println(collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>筛选（统计)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test7() &#123;</span><br><span class="line">     List&lt;Integer&gt; list = Arrays.asList(7, 6, 4, 8, 2, 11, 9);</span><br><span class="line">     long count = list.stream().filter(x -&gt; x &lt; 6).count();</span><br><span class="line">     System.out.println(&quot;list中大于6的元素个数：&quot; + count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>聚合（String中最长元素）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test4() &#123;</span><br><span class="line">     List&lt;String&gt; list = Arrays.asList(&quot;adnm&quot;, &quot;admmt&quot;, &quot;pot&quot;, &quot;xbangd&quot;, &quot;weoujgsd&quot;);</span><br><span class="line">      </span><br><span class="line">     Optional&lt;String&gt; max = list.stream().max(Comparator.comparing(String::length));</span><br><span class="line">     System.out.println(&quot;最长的字符串：&quot; + max.get());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚合（最大/最小）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> @Test</span><br><span class="line"> void test6() throws ParseException &#123;</span><br><span class="line">      List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">      personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(&quot;2020-02-01&quot;)));</span><br><span class="line">      personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(&quot;2020-02-02&quot;)));</span><br><span class="line">      personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(&quot;2020-02-04&quot;)));</span><br><span class="line">      personList.add(new Person(&quot;Anni&quot;, 8200, 24, &quot;female&quot;, &quot;New York&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(&quot;2020-01-01&quot;)));</span><br><span class="line">      personList.add(new Person(&quot;Owen&quot;, 9500, 25, &quot;male&quot;, &quot;New York&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(&quot;2021-02-01&quot;)));</span><br><span class="line">      personList.add(new Person(&quot;Alisa&quot;, 7900, 26, &quot;female&quot;, &quot;New York&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(&quot;2020-02-11&quot;)));</span><br><span class="line">      </span><br><span class="line">      String name = personList.stream().max(Comparator.comparingInt(Person::getAge)).get().getName();</span><br><span class="line">      System.out.println(name);</span><br><span class="line">      String name1 = personList.stream().min(Comparator.comparing(Person::getDate)).get().getName();</span><br><span class="line">      System.out.println(name1);</span><br><span class="line">      Optional&lt;Person&gt; max = personList.stream().max(Comparator.comparingInt(Person::getSalary));</span><br><span class="line">      System.out.println(&quot;员工工资最大值：&quot; + max.get().getSalary());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test5() &#123;</span><br><span class="line">     List&lt;Integer&gt; list = Arrays.asList(7, 6, 9, 4, 11, 6);</span><br><span class="line">     // 自然排序</span><br><span class="line">     Optional&lt;Integer&gt; max = list.stream().max(Integer::compareTo);</span><br><span class="line">     // 自定义排序</span><br><span class="line">     Optional&lt;Integer&gt; max2 = list.stream().max(new Comparator&lt;Integer&gt;() &#123;</span><br><span class="line">          @Override</span><br><span class="line">          public int compare(Integer o1, Integer o2) &#123;</span><br><span class="line">              return o1.compareTo(o2);</span><br><span class="line">          &#125;</span><br><span class="line">     &#125;);</span><br><span class="line">     System.out.println(&quot;自然排序的最大值：&quot; + max.get());</span><br><span class="line">     System.out.println(&quot;自定义排序的最大值：&quot; + max2.get());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 排序：</span><br><span class="line"> * sorted，中间操作。有两种排序：</span><br><span class="line"> * sorted()：自然排序，流中元素需实现Comparable接口</span><br><span class="line"> * sorted(Comparator com)：Comparator排序器自定义排序</span><br><span class="line"> */</span><br><span class="line">@Test</span><br><span class="line">public void test17() &#123;</span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">      </span><br><span class="line">    personList.add(new Person(&quot;Sherry&quot;, 9010, 24, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Tom&quot;, 8900, 22, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 9010, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 8800, 26, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Alisa&quot;, 9000, 26, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">      </span><br><span class="line">    List&lt;String&gt; names = personList.stream()</span><br><span class="line">    		.sorted(Comparator.comparing(Person::getSalary))</span><br><span class="line">    		.map(m -&gt; m.getName())</span><br><span class="line">    		.collect(Collectors.toList());</span><br><span class="line">    System.out.println(&quot;正序: &quot; + names);</span><br><span class="line">      </span><br><span class="line">    List&lt;String&gt; collect = personList.stream()</span><br><span class="line">    		.sorted(Comparator.comparing(Person::getSalary).reversed())</span><br><span class="line">    		.map(Person::getName)</span><br><span class="line">    		.collect(Collectors.toList());</span><br><span class="line">    System.out.println(&quot;倒序: &quot; + collect);</span><br><span class="line">      </span><br><span class="line">    List&lt;String&gt; collectName = personList.stream()</span><br><span class="line">    		.sorted(Comparator.comparing(Person::getSalary).thenComparing(Person::getAge).reversed())</span><br><span class="line">    		.map(Person::getName)</span><br><span class="line">    		.collect(Collectors.toList());</span><br><span class="line">    System.out.println(&quot;先按照工资，在按照年龄: &quot; + collectName);</span><br><span class="line">      </span><br><span class="line">    // 先按工资再按年龄自定义排序（从大到小）</span><br><span class="line">    List&lt;String&gt; newList4 = personList.stream().sorted((p1, p2) -&gt; &#123;</span><br><span class="line">    	if (p1.getSalary() == p2.getSalary()) &#123;</span><br><span class="line">        	return p2.getAge() - p1.getAge();</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">        	return p2.getSalary() - p1.getSalary();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).map(Person::getName).collect(Collectors.toList());</span><br><span class="line">    	System.out.println(newList4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>映射</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test8() &#123;</span><br><span class="line">     String[] strArr = &#123;&quot;abcd&quot;, &quot;bcdd&quot;, &quot;defde&quot;, &quot;fTr&quot;&#125;;</span><br><span class="line">     List&lt;String&gt; strList = Arrays.stream(strArr).map(String::toUpperCase).collect(Collectors.toList());</span><br><span class="line">     List&lt;Integer&gt; intList = Arrays.asList(1, 3, 5, 7, 9, 11);</span><br><span class="line">     List&lt;Integer&gt; intListNew = intList.stream().map(x -&gt; x + 3).collect(Collectors.toList());</span><br><span class="line">     List&lt;Integer&gt; collect = intList.stream().filter(x -&gt; x &gt; 5).map(y -&gt; y + 3).collect(Collectors.toList());</span><br><span class="line">     System.out.println(collect);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Test</span><br><span class="line">void test9() &#123;</span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">	personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Anni&quot;, 8200, 24, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Owen&quot;, 9500, 25, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Alisa&quot;, 7900, 26, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">      </span><br><span class="line">    // 不改变原来员工集合的方式</span><br><span class="line">    List&lt;Person&gt; personListNew = personList.stream().map(person -&gt; &#123;</span><br><span class="line">    	Person personNew = new Person(person.getName(), 0, 0, null, null);</span><br><span class="line">        personNew.setSalary(person.getSalary() + 10000);</span><br><span class="line">        return personNew;</span><br><span class="line">    &#125;).collect(Collectors.toList());</span><br><span class="line">    System.out.println(&quot;一次改动前：&quot; + personList.get(0).getName() + &quot;--&gt;&quot; + personList.get(0).getSalary());</span><br><span class="line">    System.out.println(&quot;一次改动后：&quot; + personListNew.get(0).getName() + &quot;--&gt;&quot; + personListNew.get(0).getSalary());  </span><br><span class="line">      </span><br><span class="line">    // 改变原来员工集合的方式</span><br><span class="line">    List&lt;Person&gt; personListNew2 = personList.stream().map(person -&gt; &#123;</span><br><span class="line">    	person.setSalary(person.getSalary() + 10000);</span><br><span class="line">        return person;</span><br><span class="line">        &#125;).collect(Collectors.toList());</span><br><span class="line">	System.out.println(&quot;二次改动前：&quot; + personList.get(0).getName() + &quot;--&gt;&quot; + personListNew.get(0).getSalary());</span><br><span class="line">    System.out.println(&quot;二次改动后：&quot; + personListNew2.get(0).getName() + &quot;--&gt;&quot; + personListNew.get(0).getSalary());</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">@Test</span><br><span class="line">void test10() &#123;</span><br><span class="line">	List&lt;String&gt; list = Arrays.asList(&quot;m,k,l,a&quot;, &quot;1,3,5,7&quot;);</span><br><span class="line">    List&lt;String&gt; listNew = list.stream().flatMap(s -&gt; &#123;</span><br><span class="line">    	// 将每个元素转换成一个stream</span><br><span class="line">        String[] split = s.split(&quot;,&quot;);</span><br><span class="line">        Stream&lt;String&gt; s2 = Arrays.stream(split);</span><br><span class="line">        return s2;</span><br><span class="line">    &#125;).collect(Collectors.toList());</span><br><span class="line">    System.out.println(&quot;处理前的集合：&quot; + list);</span><br><span class="line">    System.out.println(&quot;处理后的集合：&quot; + listNew);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>归约</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">void test11() &#123;</span><br><span class="line">	List&lt;Integer&gt; list = Arrays.asList(1, 3, 2, 8, 11, 4);</span><br><span class="line">    // 求和方式1</span><br><span class="line">    Optional&lt;Integer&gt; sum = list.stream().reduce((x, y) -&gt; x + y);</span><br><span class="line">    // 求和方式2</span><br><span class="line">    Optional&lt;Integer&gt; sum2 = list.stream().reduce(Integer::sum);</span><br><span class="line">    // 求和方式3</span><br><span class="line">    Integer sum3 = list.stream().reduce(0, Integer::sum);      </span><br><span class="line">    // 求乘积</span><br><span class="line">    Optional&lt;Integer&gt; product = list.stream().reduce((x, y) -&gt; x * y);</span><br><span class="line">      </span><br><span class="line">    // 求最大值方式1</span><br><span class="line">    Optional&lt;Integer&gt; max = list.stream().reduce((x, y) -&gt; x &gt; y ? x : y);</span><br><span class="line">    // 求最大值写法2</span><br><span class="line">    Integer max2 = list.stream().reduce(1, Integer::max);</span><br><span class="line">      </span><br><span class="line">    System.out.println(&quot;list求和：&quot; + sum.get() + &quot;,&quot; + sum2.get() + &quot;,&quot; + sum3);</span><br><span class="line">    System.out.println(&quot;list求积：&quot; + product.get());</span><br><span class="line">    System.out.println(&quot;list求和：&quot; + max.get() + &quot;,&quot; + max2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Test</span><br><span class="line">public void test16() &#123;</span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">    personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">      </span><br><span class="line">    Integer sum = personList.stream().collect(Collectors.reducing(0, Person::getSalary, (i, j) -&gt; (i + j - 5000)));</span><br><span class="line">    System.out.println(&quot;员工扣税薪资总和：&quot; + sum);</span><br><span class="line">      </span><br><span class="line">    // stream的reduce</span><br><span class="line">    Optional&lt;Integer&gt; sum2 = personList.stream().map(Person::getSalary).reduce(Integer::sum);</span><br><span class="line">    System.out.println(&quot;员工薪资总和：&quot; + sum2.get());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>归集（toList/toSet/toMap)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test12() &#123;</span><br><span class="line">	List&lt;Integer&gt; list = Arrays.asList(1, 6, 3, 4, 6, 7, 9, 6, 20);</span><br><span class="line">    List&lt;Integer&gt; collect = list.stream().filter(l -&gt; l % 2 == 0).collect(Collectors.toList());</span><br><span class="line">    Set&lt;Integer&gt; collect1 = list.stream()</span><br><span class="line">    			.filter(x -&gt; x % 2 == 0)</span><br><span class="line">        		.filter(x -&gt; x % 4 == 0)</span><br><span class="line">                .collect(Collectors.toSet());</span><br><span class="line">      </span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">    personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Anni&quot;, 8200, 24, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">      </span><br><span class="line">    Map&lt;?, ?&gt; personMap = personList.stream()</span><br><span class="line">    			.filter(person -&gt; person.getSalary() &gt; 8000)</span><br><span class="line">    			.collect(Collectors.toMap(Person::getName, p -&gt; p.getSalary()));</span><br><span class="line">    System.out.println(personMap);</span><br><span class="line">      </span><br><span class="line">    System.out.println(collect);</span><br><span class="line">    System.out.println(collect1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>统计</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">	* 统计：count/averaging</span><br><span class="line">    * Collectors:提供了一系列用于数据统计的静态方法：</span><br><span class="line">    * 计数：count</span><br><span class="line">    * 平均值：averagingInt、averagingLong、averagingDouble</span><br><span class="line">    * 最值：maxBy、minBy</span><br><span class="line">    * 求和：summingInt、summingLong、summingDouble</span><br><span class="line">    * 统计以上所有：summarizingInt、summarizingLong、summarizingDouble</span><br><span class="line">    */</span><br><span class="line">@Test</span><br><span class="line">public void test13() &#123;</span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">    personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">    Long aLong = personList.stream().collect(Collectors.counting());</span><br><span class="line">    System.out.println(&quot;aLong: &quot; + aLong);</span><br><span class="line">    Double avgSalary = personList.stream().collect(Collectors.averagingDouble(p -&gt; p.getSalary()));</span><br><span class="line">    System.out.println(&quot;avgSalary: &quot; + avgSalary);</span><br><span class="line">    Optional&lt;Integer&gt; max = personList.stream()</span><br><span class="line">    				.map(p -&gt; p.getSalary())</span><br><span class="line">    				.collect(Collectors.maxBy(Integer::compare));</span><br><span class="line">    System.out.println(&quot;max: &quot; + max.get());</span><br><span class="line">    Integer sum = personList.stream().collect(Collectors.summingInt(Person::getSalary));</span><br><span class="line">    System.out.println(&quot;sum: &quot; + sum);</span><br><span class="line">    DoubleSummaryStatistics sum2 = personList.stream().collect(Collectors.summarizingDouble(Person::getSalary));</span><br><span class="line">    System.out.println(&quot;sum2: &quot; + sum2);</span><br><span class="line">      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分组（partitioningBy/groupingBy）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test14() &#123;</span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">    personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 7000, 22, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 7800, 32, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Anni&quot;, 8200, 33, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Owen&quot;, 9500, 35, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Alisa&quot;, 7900, 12, &quot;female&quot;, &quot;New York&quot;));</span><br><span class="line">      </span><br><span class="line">    Map&lt;Boolean, List&lt;Person&gt;&gt; list = personList.stream().collect(Collectors.partitioningBy(x -&gt; x.getSalary() &gt; 8000));</span><br><span class="line">    System.out.println(list);</span><br><span class="line">      </span><br><span class="line">    Map&lt;String, List&lt;Person&gt;&gt; sex = personList.stream().collect(Collectors.groupingBy(Person::getSex));</span><br><span class="line">    System.out.println(&quot;sex: &quot; + sex);</span><br><span class="line">      </span><br><span class="line">    Map&lt;String, Map&lt;String, List&lt;Person&gt;&gt;&gt; collect =</span><br><span class="line">                      personList.stream()</span><br><span class="line">                      .collect(Collectors.groupingBy(p -&gt; p.getSex(), Collectors.groupingBy(x -&gt; x.getArea())));</span><br><span class="line">    System.out.println(collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接合（joining）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test15() &#123;</span><br><span class="line">	List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span><br><span class="line">    personList.add(new Person(&quot;Tom&quot;, 8900, 23, &quot;male&quot;, &quot;New York&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Jack&quot;, 7000, 25, &quot;male&quot;, &quot;Washington&quot;));</span><br><span class="line">    personList.add(new Person(&quot;Lily&quot;, 7800, 21, &quot;female&quot;, &quot;Washington&quot;));</span><br><span class="line">      </span><br><span class="line">    String collect = personList.stream().map(p -&gt; p.getName()).collect(Collectors.joining(&quot;,&quot;));</span><br><span class="line">    System.out.println(&quot;name: &quot; + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>提取/聚合</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void test18() &#123;</span><br><span class="line">	String[] arr1 = &#123;&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;&#125;;</span><br><span class="line">    String[] arr2 = &#123;&quot;d&quot;, &quot;e&quot;, &quot;f&quot;, &quot;g&quot;&#125;;</span><br><span class="line">    Stream&lt;String&gt; stream1 = Stream.of(arr1);</span><br><span class="line">    Stream&lt;String&gt; stream2 = Stream.of(arr2);</span><br><span class="line">    List&lt;String&gt; collect = Stream.concat(stream1, stream2)</span><br><span class="line">    				.distinct()</span><br><span class="line">    				.collect(Collectors.toList());</span><br><span class="line">    System.out.println(collect);</span><br><span class="line">      </span><br><span class="line">    List&lt;Integer&gt; integers = Stream.iterate(0, x -&gt; x + 2)</span><br><span class="line">    				.limit(10)</span><br><span class="line">    				.collect(Collectors.toList());</span><br><span class="line">    System.out.println(integers);</span><br><span class="line">      </span><br><span class="line">    List&lt;Integer&gt; integerList = Stream.iterate(0, x -&gt; x + 2)</span><br><span class="line">    				.skip(2)</span><br><span class="line">    				.limit(10)</span><br><span class="line">    				.collect(Collectors.toList());</span><br><span class="line">    System.out.println(integerList);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>遍历/递归</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">     public void test19() &#123;</span><br><span class="line">        //模拟从数据库查询出来</span><br><span class="line">        List&lt;Menu&gt; menus = Arrays.asList(</span><br><span class="line">                new Menu(1, &quot;根节点1&quot;, 0),</span><br><span class="line">                new Menu(2, &quot;子节点1&quot;, 1),</span><br><span class="line">                new Menu(3, &quot;子节点1.1&quot;, 2),</span><br><span class="line">                new Menu(4, &quot;子节点1.2&quot;, 2),</span><br><span class="line">                new Menu(5, &quot;根节点1.3&quot;, 2),</span><br><span class="line">                new Menu(6, &quot;根节点2&quot;, 1),</span><br><span class="line">                new Menu(7, &quot;根节点2.1&quot;, 6),</span><br><span class="line">                new Menu(8, &quot;根节点2.2&quot;, 6),</span><br><span class="line">                new Menu(9, &quot;根节点2.2.1&quot;, 7),</span><br><span class="line">                new Menu(10, &quot;根节点2.2.2&quot;, 7),</span><br><span class="line">                new Menu(11, &quot;根节点3&quot;, 1),</span><br><span class="line">                new Menu(12, &quot;根节点3.1&quot;, 11),</span><br><span class="line">                new Menu(13, &quot;根节点2&quot;, 0)</span><br><span class="line">        );</span><br><span class="line">        //获取父节点</span><br><span class="line">        List&lt;Menu&gt; collect = menus.stream().filter(m -&gt; m.getParentId() == 0).map(</span><br><span class="line">                (m) -&gt; &#123;</span><br><span class="line">                    m.setChildList(getChildrens(m, menus));</span><br><span class="line">                    return m;</span><br><span class="line">                &#125;</span><br><span class="line">        ).collect(Collectors.toList());</span><br><span class="line">        System.out.println(&quot;-------转json输出结果-------&quot;);</span><br><span class="line">        System.out.println(JSONUtil.parseArray(collect).toString());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	 /**</span><br><span class="line">     * 递归查询子节点</span><br><span class="line">     *</span><br><span class="line">     * @param root 根节点</span><br><span class="line">     * @param all  所有节点</span><br><span class="line">     * @return 根节点信息</span><br><span class="line">     */</span><br><span class="line">    private List&lt;Menu&gt; getChildrens(Menu root, List&lt;Menu&gt; all) &#123;</span><br><span class="line">        List&lt;Menu&gt; children = all.stream().filter(m -&gt; &#123;</span><br><span class="line">            return Objects.equals(m.getParentId(), root.getId());</span><br><span class="line">        &#125;).map(</span><br><span class="line">                (m) -&gt; &#123;</span><br><span class="line">                    m.setChildList(getChildrens(m, all));</span><br><span class="line">                    return m;</span><br><span class="line">                &#125;</span><br><span class="line">        ).collect(Collectors.toList());</span><br><span class="line">        return children;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ol>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/03/03/Nginx-%E9%AB%98%E5%8F%AF%E7%94%A8-%E4%B8%BB%E4%BB%8E%E9%85%8D%E7%BD%AE/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-03-03 11:14:00
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/Java/" title="Java">
+                        <b>#</b> Java
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/Stream/" title="Stream">
+                        <b>#</b> Stream
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2021/03/03/Docker/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://yy73.github.io/">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://yy73.github.io/">Copyright © 73 2021</a>
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://yy73.github.io/">Theme by 73 | Powered by Hexo</a>
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="back-to-top hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+      
+  <div class="search-icon" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+    </div>
+  </body>
+</html>
