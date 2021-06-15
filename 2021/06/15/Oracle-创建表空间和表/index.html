@@ -11,7 +11,7 @@
   
   <title>
     
-      Tag 
+      Oracle-创建表空间和表 
       
       
       |
@@ -104,21 +104,141 @@ MathJax = {
 </script>
 
 
-  <!-- 标签页 url形式：https://yoursite/tags/ -->
-  <div class="container tag-index">
-    <div>
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NPM/" rel="tag">NPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node/" rel="tag">Node</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Oracle-11g/" rel="tag">Oracle(11g)</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stream/" rel="tag">Stream</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apt/" rel="tag">apt</a><span class="tag-list-count">1</span></li></ul>
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Oracle-创建表空间和表</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-06-15 15:15:35
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/Oracle-11g/" title="Oracle(11g)">
+                    <b>#</b> Oracle(11g)
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <ol>
+<li><p>运行 win+r –&gt;&gt; cmd  –&gt;&gt; sqlplus,输入  system，初始化密码，登录成功；</p>
+</li>
+<li><p>创建表空间</p>
+<ul>
+<li><p>基本语法</p>
+<ul>
+<li><p>create tablespace 表空间名 datafile ‘路径’ size 空间大小eg</p>
+</li>
+<li><p>create tablespace test datafile ‘c:\data\test.dbf’ size 200M;</p>
+<p>(在c盘data目录下创建名为test的表空间，大小为200M)</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>创建用户</p>
+<ul>
+<li><p>基本语法</p>
+<ul>
+<li>create user 用户名 identified 密码 default tablespace 表空间名;</li>
+</ul>
+</li>
+<li><p>eg</p>
+<ul>
+<li><p>create user test identified by test default tablespace test;</p>
+<p>（创建一个用户名为test,密码为test的用户，他所操做的表空间名为test{刚才第一步创建过的}）</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>为用户分配权限</p>
+<ul>
+<li><p>基本语法</p>
+<ul>
+<li>grant connect,resource to 用户名；</li>
+</ul>
+</li>
+<li><p>eg</p>
+<ul>
+<li><p>grant connect,resource to test;</p>
+<p> （将连接，资源操作的权限赋予test用户）</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>连接</p>
+<ul>
+<li>使用刚才创建的  test 用户 就可以操作 test表空间，建表。。。</li>
+</ul>
+</li>
+</ol>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/06/15/Mybatis-%E6%89%B9%E9%87%8F%E6%93%8D%E4%BD%9C/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-06-15 15:15:35
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/Oracle-11g/" title="Oracle(11g)">
+                        <b>#</b> Oracle(11g)
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
     </div>
+    
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+      </div>
+    
   </div>
-  
 
-  
-
-  
-
-  
-
-  
 
         <div class="footer">
   <div class="social">
